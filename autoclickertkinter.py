@@ -26,9 +26,9 @@ if __name__ == "__main__":
     target_y_list = [0]
     milliseconds_list = [0]
     num_of_clicks_list = [1]
-    set_pos_list = [False]
-    return_cursor_list = [False]
-    enabled_list = [False]
+    set_pos_list = [0]
+    return_cursor_list = [0]
+    enabled_list = [0]
 
 def update_button_callback():
     target_x_list[click] = int(target_x_entry.get())
@@ -38,7 +38,7 @@ def update_button_callback():
     
     set_pos_list[click] = set_pos_value.get()
     return_cursor_list[click] = return_cursor_value.get()
-    enabled_list[click] = enabled.get()
+    enabled_list[click] = enabled_value.get()
 
 def backwards_button_callback():
     global click
@@ -50,34 +50,50 @@ def backwards_button_callback():
     set_entry(milliseconds_entry, milliseconds_list[click])
     set_entry(num_of_clicks_entry, num_of_clicks_list[click])
     
-    set_pos_value = set_pos_list[click]
-    return_cursor_value = return_cursor_list[click]
-    enabled = enabled_list[click]
+    global set_pos_value
+    global return_cursor_value
+    global enabled_value
+    
+    set_pos_value.set(set_pos_list[click])
+    return_cursor_value.set(return_cursor_list[click])
+    enabled_value.set(enabled_list[click])
 
 def set_entry(entry, string):
+    """
+    Quick and small function that just lets me set entries faster.
+    """
     entry.delete(0, tk.END)
     entry.insert(0, string)
 
 def forwards_button_callback():
+    """
+    Callback for the forwards button.
+    1: Changes the click display label.
+    2: If the new click has not been seen before. It has default settings added to the settings arrays.
+    3: Sets the entries to be the new values.
+    """
     global click
     click += 1
-    click_display.configure(text = f"Click: {click}")
-    if len(target_x_list) <= click:
+    click_display.configure(text = f"Click: {click}") # 1
+    if len(target_x_list) <= click: # 2
         target_x_list.append(0)
         target_y_list.append(0)
         milliseconds_list.append(0)
         num_of_clicks_list.append(1)
-        set_pos_list.append(False)
-        return_cursor_list.append(False)
-        enabled_list.append(False)
-    set_entry(target_x_entry, target_x_list[click])
+        set_pos_list.append(0)
+        return_cursor_list.append(0)
+        enabled_list.append(0)
+    set_entry(target_x_entry, target_x_list[click]) # 3
     set_entry(target_y_entry, target_y_list[click])
     set_entry(milliseconds_entry, milliseconds_list[click])
     set_entry(num_of_clicks_entry, num_of_clicks_list[click])
+    global set_pos_value
+    global return_cursor_value
+    global enabled_value
     
-    set_pos_value = set_pos_list[click]
-    return_cursor_value = return_cursor_list[click]
-    enabled = enabled_list[click]
+    set_pos_value.set(set_pos_list[click])
+    return_cursor_value.set(return_cursor_list[click])
+    enabled_value.set(enabled_list[click])
 
 def on_press(key):
     """This function is used by Pynput to let me start and stop the program while Tkinter is running."""
@@ -96,9 +112,9 @@ if __name__ == "__main__":
     
     
 
-    set_pos_value = tk.BooleanVar()
-    return_cursor_value = tk.BooleanVar()
-    enabled = tk.BooleanVar()
+    set_pos_value = tk.IntVar()
+    return_cursor_value = tk.IntVar()
+    enabled_value = tk.IntVar()
 
     target_x_label = tk.Label(text = "Target (X)", borderwidth = 2, relief = "groove", bg = "#4B8BBE", fg = "#e6e8ea")
     target_x_entry = tk.Entry(borderwidth = 2, relief = "groove", bg = "#4B8BBE", fg = "#e6e8ea")
@@ -120,7 +136,7 @@ if __name__ == "__main__":
 
     current_mouse_coordinates_label = tk.Label(text = "", borderwidth = 2, relief = "groove", bg = "#4B8BBE", fg = "#e6e8ea")
     
-    enabled_check_button = tk.Checkbutton(text = "Enabled", var = enabled, borderwidth = 2, relief = "groove", bg = "#FFD43B", fg = "#2b5b84", activebackground = "#FFD43B", activeforeground = "#2b5b84")
+    enabled_check_button = tk.Checkbutton(text = "Enabled", var = enabled_value, borderwidth = 2, relief = "groove", bg = "#FFD43B", fg = "#2b5b84", activebackground = "#FFD43B", activeforeground = "#2b5b84")
     
     update_button = tk.Button(text = "Save Settings", borderwidth = 2, relief = "groove", bg = "#FFD43B", fg = "#2b5b84", activebackground = "#FFD43B", activeforeground = "#2b5b84", command = update_button_callback)
     
